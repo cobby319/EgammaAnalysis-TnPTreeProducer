@@ -5,26 +5,31 @@ config = config()
 submitVersion = "egmNtuple_V2ID_2016"
 
 doEleTree = 'doEleID=True'
-doPhoTree = 'doPhoID=True'
-doHLTTree = 'doTrigger=False'
-doRECO    = 'doRECO=False'
+doPhoTree = 'doPhoID=False'
+doHLTTree = 'doTrigger=True'
+doRECO    = 'doRECO=True'
 
-mainOutputDir = '/store/group/phys_egamma/swmukher/%s' % submitVersion
+#mainOutputDir = '/store/group/phys_egamma/swmukher/%s' % submitVersion
 
 config.General.transferLogs = False
 
 config.JobType.pluginName  = 'Analysis'
 
 # Name of the CMSSW configuration file
-config.JobType.psetName  = '/afs/cern.ch/user/s/swmukher/work/NtupleProd_2016/CMSSW_10_2_5/src/EgammaAnalysis/TnPTreeProducer/python/TnPTreeProducer_cfg.py'
+config.JobType.psetName  = '../../python/TnPTreeProducer_cfg.py'
 config.Data.allowNonValidInputDataset = False
 
 config.Data.inputDBS = 'global'
 config.Data.publication = False
 
 #config.Data.publishDataName = 
-config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'T2_BE_IIHE'
 
+dataset = {
+
+'DYJetsToLL_M10to50_amcatnloFXFX':'/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16DR80Premix-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/AODSIM'    
+
+}
 
 if __name__ == '__main__':
 
@@ -46,7 +51,7 @@ if __name__ == '__main__':
 
 
     ##### submit MC
-    config.Data.outLFNDirBase = '%s/%s/' % (mainOutputDir,'mc')
+    config.Data.outLFNDirBase = '/store/user/hanwen/lepeffsample'
     config.Data.splitting     = 'FileBased'
     config.Data.unitsPerJob   = 20
     config.JobType.pyCfgParams  = ['isMC=True','isAOD=True',doEleTree,doPhoTree,doHLTTree,doRECO]
@@ -64,9 +69,15 @@ if __name__ == '__main__':
 #    config.Data.inputDataset    = '/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16DR80Premix-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext2-v1/AODSIM'
 #    submit(config)
 
-    config.General.requestName  = 'DYJetsToLL_M10to50_amcatnloFXFX'
-    config.Data.inputDataset    = '/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16DR80Premix-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/AODSIM'
-    submit(config)
+ #   config.General.requestName  = 'DYJetsToLL_M10to50_amcatnloFXFX'
+#    config.Data.inputDataset    = '/DYJetsToLL_M-10to50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16DR80Premix-PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/AODSIM'
+#    submit(config)
+    for sample in dataset:
+        config.General.requestName = sample
+        config.Data.inputDataset = dataset[sample]
+#        config.Data.outputDatasetTag = sample
+        submit(config)
+
 
 
     
